@@ -7,7 +7,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-import { Box, Button } from "@mui/material";
+import { Box, Button, ButtonGroup } from "@mui/material";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { keyframes } from "styled-components";
@@ -19,6 +19,8 @@ import InfoIcon from "@mui/icons-material/Info";
 import { css } from "styled-components";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import TextField from "@mui/material/TextField";
+import Backdrop from "@mui/material/Backdrop";
+import Alert from "@mui/material/Alert";
 
 const ContainerGrid = styled(Box)`
   display: grid;
@@ -140,7 +142,7 @@ const SaveCustomList = styled(Box)`
   align-items: center;
   height: 200px;
   width: 420px;
-  background-color: gray;
+  background-color: white;
   position: absolute;
   border-radius: 8px;
   top: 50%;
@@ -170,7 +172,7 @@ const Assessment = () => {
   const [customAssessmentList, setCustomAssessmentList] = useState([]);
   const [customListName, setCustomListName] = useState([]);
   const [isOpenSave, setIsOpenSave] = useState(false);
-
+  const [showAlert, setShowAlert] = useState(false);
   ///// Darg&drop Handler functions
   const dargStarted = (e, item) => {
     console.log("drag strated");
@@ -240,45 +242,70 @@ const Assessment = () => {
       customList = { ...customList, [idx + 1]: data };
     });
     setCustomAssessmentList((prev) => [...prev, customList]);
-
+    setIsOpenSave((prev) => !prev);
     console.log(customList);
+    setShowAlert(true);
+
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 2000);
   };
 
   return (
     <>
       {/* ASSESMENT SAVE  */}
-      {isOpenSave && (
-        <SaveCustomList>
-          <TextField
-            id="filled-basic"
-            label="Filled"
-            variant="filled"
-            sx={{ width: "70%" }}
-            onChange={(eve) => {
-              setCustomListName(eve.target.value);
-            }}
-          />
+      {showAlert && (
+        <Alert severity="success">
+          Here is a gentle confirmation that your action was successful.
+        </Alert>
+      )}
 
-          <Button
-            variant="contained"
-            sx={{ width: "20%" }}
-            onClick={() => {
-              saveCustomAssesment();
-            }}
-          >
-            Save
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            sx={{ width: "20%" }}
-            onClick={() => {
-              openSaveBox();
-            }}
-          >
-            cancel
-          </Button>
-        </SaveCustomList>
+      {isOpenSave && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+        >
+          <SaveCustomList>
+            <TextField
+              id="filled-basic"
+              label="Module name"
+              variant="filled"
+              sx={{ width: "70%" }}
+              onChange={(eve) => {
+                setCustomListName(eve.target.value);
+              }}
+            />
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "8px",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ width: "20%", marginRight: "5px" }}
+                onClick={() => {
+                  saveCustomAssesment();
+                }}
+              >
+                Save
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ width: "20%" }}
+                onClick={() => {
+                  openSaveBox();
+                }}
+              >
+                cancel
+              </Button>
+            </Box>
+          </SaveCustomList>
+        </Backdrop>
       )}
 
       {/* EDIT MODE  */}
