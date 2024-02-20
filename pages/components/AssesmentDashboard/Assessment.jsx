@@ -227,8 +227,8 @@ const Assessment = () => {
   };
 
   const deletecreatedAssessment = (item) => {
-    const updatedArray = selectedModules.filter((value) => value !== item);
-    setCustomAssessmentList(updatedArray);
+     const updatedArray = customAssessmentList.filter((value) => value.name !== item);
+     setCustomAssessmentList(updatedArray);
   };
 
   ////Save Custom Assesment
@@ -465,7 +465,7 @@ const Assessment = () => {
                       <RemoveCircleIcon
                         sx={{ color: "#d93e33", cursor: "pointer" }}
                         onClick={() => {
-                          deletecreatedAssessment(value);
+                          deletecreatedAssessment(value.name);
                         }}
                       />
                     )}
