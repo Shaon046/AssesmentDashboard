@@ -257,7 +257,7 @@ const Assessment = () => {
       {/* ASSESMENT SAVE  */}
       {showAlert && (
         <Alert severity="success" sx={{position:"absolute", left:"50%" ,top:"50%" ,zIndex:'1000' ,transform:"translate(-50%,-50%)" }}>
-          Here is a gentle confirmation that your action was successful.
+          Assessment module successfully saved.
         </Alert>
       )}
 
