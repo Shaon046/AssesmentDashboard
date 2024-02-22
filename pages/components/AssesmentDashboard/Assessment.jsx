@@ -21,7 +21,6 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import TextField from "@mui/material/TextField";
 import Backdrop from "@mui/material/Backdrop";
 import Alert from "@mui/material/Alert";
-import { Translate } from "@mui/icons-material";
 
 const ContainerGrid = styled(Box)`
   display: grid;
@@ -174,6 +173,7 @@ const Assessment = () => {
   const [customListName, setCustomListName] = useState([]);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [dragStarted, setDragStarted] = useState(false);
   ///// Darg&drop Handler functions
   const dargStarted = (e, item) => {
     console.log("drag strated");
@@ -186,8 +186,10 @@ const Assessment = () => {
   };
 
   const dragDroped = (e) => {
-    console.log(e.dataTransfer.getData("item"));
-    setSelectedModules((prev) => [...prev, e.dataTransfer.getData("item")]);
+    const data = e.dataTransfer.getData("item");
+    if (!selectedModules.includes(data)) {
+      setSelectedModules((prev) => [...prev, data]);
+    }
   };
 
   /////Handler functions
@@ -227,8 +229,10 @@ const Assessment = () => {
   };
 
   const deletecreatedAssessment = (item) => {
-     const updatedArray = customAssessmentList.filter((value) => value.name !== item);
-     setCustomAssessmentList(updatedArray);
+    const updatedArray = customAssessmentList.filter(
+      (value) => value.name !== item
+    );
+    setCustomAssessmentList(updatedArray);
   };
 
   ////Save Custom Assesment
@@ -256,7 +260,16 @@ const Assessment = () => {
     <>
       {/* ASSESMENT SAVE  */}
       {showAlert && (
-        <Alert severity="success" sx={{position:"absolute", left:"50%" ,top:"50%" ,zIndex:'1000' ,transform:"translate(-50%,-50%)" }}>
+        <Alert
+          severity="success"
+          sx={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            zIndex: "1000",
+            transform: "translate(-50%,-50%)",
+          }}
+        >
           Assessment module successfully saved.
         </Alert>
       )}
@@ -336,7 +349,14 @@ const Assessment = () => {
         {/* ///////////GRID 1/////////*/}
         <div>
           <Header>All Assessment Modules</Header>
-          <CustomList>
+          <CustomList
+            onDragStart={() => {
+              setDragStarted(true);
+            }}
+            onDragEnd={() => {
+              setDragStarted(false);
+            }}
+          >
             {showInfoHelpTest1 && (
               <InfoHelpTest>this is help text 1</InfoHelpTest>
             )}
@@ -354,7 +374,8 @@ const Assessment = () => {
                   {/* Dragable  */}
                   <CustomListItems
                     editOn={editOn}
-                    draggable
+                    
+                    draggable={editOn ? true : false}
                     onDragStart={(e) => dargStarted(e, value)} //props
                   >
                     <ListItemButton role={undefined} dense>
@@ -376,7 +397,14 @@ const Assessment = () => {
           <Header>Selected Assessment Modules</Header>
 
           <CustomList
+            style={
+              dragStarted
+                ? { backgroundColor: "#a9cae6" }
+                : { backgroundColor: "" }
+            }
+            
             droppable
+
             onDragOver={(e) => {
               dragOver(e);
             }}
